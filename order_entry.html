@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>অর্ডার ফর্ম</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f2f2f2;
+    }
+    h2, h3 {
+      text-align: center;
+    }
+    .product-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      background: white;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .product-row input {
+      width: 60px;
+    }
+    .summary {
+      margin-top: 20px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>অর্ডার ফর্ম</h2>
+<h3 id="shopTitle"></h3>
+
+<div id="productList"></div>
+
+<div class="summary">
+  <p>মোট প্রাইজ: <span id="totalPrice">0</span> টাকা</p>
+  <label>কমিশন: <input type="number" id="commissionInput" value="0"> টাকা</label>
+  <p>নেট প্রাইজ: <span id="netPrice">0</span> টাকা</p>
+</div>
+
+<script>
+  const selectedRoad = localStorage.getItem('selectedRoad');
+  const selectedDate = localStorage.getItem('selectedDate');
+  const selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '{}');
+  const products = JSON.parse(localStorage.getItem('products') || '[]');
+
+  document.getElementById('shopTitle').innerText = `${selectedShop.name} (${selectedDate})`;
+
+  const productList = document.getElementById('productList');
+  const totalPriceSpan = document.getElementById('totalPrice');
+  const netPriceSpan = document.getElementById('netPrice');
+  const commissionInput = document.getElementById('commissionInput');
+
+  let orderData = [];
+
+  function updateTotals() {
+    let total = 0;
+    orderData.forEach(item => {
+      total += item.total;
+    });
+    const commission = parseFloat(commissionInput.value || 0);
+    totalPriceSpan.innerText = total;
+    netPriceSpan.innerText = total - commission;
+  }
+
+  function saveOrder() {
+    const key = `order_${selectedRoad}_${selectedDate}_${selectedShop.name}`;
+    localStorage.setItem(key, JSON.stringify(orderData));
+  }
+
+  commissionInput.addEventListener('input', updateTotals);
+
+  products.forEach(product => {
+    const row = document.createElement('div');
+    row.className = 'product-row';
+    row.innerHTML = `
+      <span>${product.name} (${product.price}৳)</span>
+      <input type="number" placeholder="Qty" min="0">
+      <span class="total">0৳</span>
+    `;
+    const input = row.querySelector('input');
+    const totalSpan = row.querySelector('.total');
+
+    input.addEventListener('input', () => {
+      const qty = parseInt(input.value) || 0;
+      const total = qty * product.price;
+      totalSpan.innerText = `${total}৳`;
+
+      const index = orderData.findIndex(p => p.name === product.name);
+      if (qty > 0) {
+        if (index >= 0) {
+          orderData[index].quantity = qty;
+          orderData[index].total = total;
+        } else {
+          orderData.push({ name: product.name, price: product.price, quantity: qty, total });
+        }
+      } else {
+        if (index >= 0) orderData.splice(index, 1);
+      }
+
+      updateTotals();
+      saveOrder();
+    });
+
+    productList.appendChild(row);
+  });
+</script>
+
+</body>
+</html>

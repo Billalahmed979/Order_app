@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>তারিখ সিলেক্ট করুন</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    h2 {
+      text-align: center;
+    }
+    .form-box {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+    }
+    label, input, button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px;
+      background: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>তারিখ নির্বাচন</h2>
+
+<div class="form-box">
+  <label for="road">রোড</label>
+  <select id="road">
+    <option value="নয়াবাজার">নয়াবাজার</option>
+    <option value="ফুলতলা">ফুলতলা</option>
+    <option value="কামিনীগঞ্জ">কামিনীগঞ্জ</option>
+    <option value="মানিকসিং">মানিকসিং</option>
+    <option value="ওয়াবদা">ওয়াবদা</option>
+    <option value="ভবানীগঞ্জ">ভবানীগঞ্জ</option>
+    <option value="বাছিরপুর">বাছিরপুর</option>
+  </select>
+
+  <label for="date">তারিখ</label>
+  <input type="date" id="date">
+
+  <button onclick="goToShopSelect()">দোকান পেইজে যান</button>
+</div>
+
+<script>
+  function goToShopSelect() {
+    const road = document.getElementById('road').value;
+    const date = document.getElementById('date').value;
+    if (!road || !date) {
+      alert('রোড ও তারিখ সিলেক্ট করুন');
+      return;
+    }
+    // তথ্য লোকালস্টোরেজে রাখো
+    localStorage.setItem('selectedRoad', road);
+    localStorage.setItem('selectedDate', date);
+    // পরবর্তী পেইজে যাও
+    window.location.href = 'shop_select.html';
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>পুরোনো অর্ডার রিভিউ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+    select, input {
+      margin-bottom: 10px;
+      padding: 8px;
+      width: 100%;
+      max-width: 300px;
+    }
+    .order-box {
+      background: white;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 6px;
+    }
+    .item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>পুরোনো অর্ডার রিভিউ</h2>
+
+<label>রোড:</label>
+<select id="roadSelect"></select>
+
+<label>তারিখ:</label>
+<input type="date" id="dateInput">
+
+<label>দোকান:</label>
+<select id="shopSelect"></select>
+
+<div id="orderDisplay" class="order-box"></div>
+
+<script>
+  const roadList = ['নয়াবাজার', 'ফুলতলা', 'কামিনীগঞ্জ', 'মানিকসিং', 'ওয়াবদা', 'ভবানীগঞ্জ', 'বাছিরপুর'];
+
+  const roadSelect = document.getElementById('roadSelect');
+  const shopSelect = document.getElementById('shopSelect');
+  const dateInput = document.getElementById('dateInput');
+  const orderDisplay = document.getElementById('orderDisplay');
+
+  roadList.forEach(road => {
+    const opt = document.createElement('option');
+    opt.value = road;
+    opt.innerText = road;
+    roadSelect.appendChild(opt);
+  });
+
+  roadSelect.addEventListener('change', loadShops);
+  dateInput.addEventListener('change', loadShops);
+  shopSelect.addEventListener('change', showOrder);
+
+  function loadShops() {
+    shopSelect.innerHTML = '';
+    const road = roadSelect.value;
+    const shops = JSON.parse(localStorage.getItem('shops_' + road) || '[]');
+    shops.forEach(shop => {
+      const opt = document.createElement('option');
+      opt.value = shop.name;
+      opt.innerText = shop.name;
+      shopSelect.appendChild(opt);
+    });
+    showOrder();
+  }
+
+  function showOrder() {
+    const road = roadSelect.value;
+    const date = dateInput.value;
+    const shop = shopSelect.value;
+    if (!road || !date || !shop) return;
+
+    const key = `order_${road}_${date}_${shop}`;
+    const order = JSON.parse(localStorage.getItem(key) || '[]');
+
+    orderDisplay.innerHTML = `<h3>${shop} - ${date}</h3>`;
+    if (order.length === 0) {
+      orderDisplay.innerHTML += "<p>কোনো অর্ডার পাওয়া যায়নি।</p>";
+      return;
+    }
+
+    let total = 0;
+    order.forEach(item => {
+      total += item.total;
+      orderDisplay.innerHTML += `
+        <div class="item">
+          <span>${item.name} (${item.quantity}x${item.price})</span>
+          <span>${item.total}৳</span>
+        </div>
+      `;
+    });
+
+    orderDisplay.innerHTML += `<hr><strong>মোট: ${total}৳</strong>`;
+  }
+
+  // Initialize
+  loadShops();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>অর্ডার অ্যাপ - হোম</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+    }
+    header {
+      background-color: #1976d2;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .menu {
+      font-size: 24px;
+      cursor: pointer;
+    }
+    h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+    .road-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
+    .road-btn {
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin: 10px;
+      padding: 20px;
+      font-size: 18px;
+      width: 140px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+      transition: 0.2s;
+    }
+    .road-btn:hover {
+      background-color: #e3f2fd;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>অর্ডার ম্যানেজমেন্ট</h1>
+  <div class="menu" onclick="goToSettings()">⋮</div>
+</header>
+
+<div class="road-list">
+  <div class="road-btn" onclick="selectRoad('নয়াবাজার')">নয়াবাজার</div>
+  <div class="road-btn" onclick="selectRoad('ফুলতলা')">ফুলতলা</div>
+  <div class="road-btn" onclick="selectRoad('কামিনীগঞ্জ')">কামিনীগঞ্জ</div>
+  <div class="road-btn" onclick="selectRoad('মানিকসিং')">মানিকসিং</div>
+  <div class="road-btn" onclick="selectRoad('ওয়াবদা')">ওয়াবদা</div>
+  <div class="road-btn" onclick="selectRoad('ভবানীগঞ্জ')">ভবানীগঞ্জ</div>
+  <div class="road-btn" onclick="selectRoad('বাছিরপুর')">বাছিরপুর</div>
+</div>
+
+<script>
+  function goToSettings() {
+    window.location.href = "settings.html"; // পরবর্তী ধাপে এই settings.html তৈরি করতে হবে
+  }
+
+  function selectRoad(roadName) {
+    localStorage.setItem("selectedRoad", roadName);
+    window.location.href = "calendar.html"; // তারিখ সিলেকশনের পেইজ
+  }
+</script>
+
+</body>
+</html>

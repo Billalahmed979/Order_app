@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>সেটিংস</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+    }
+    header {
+      background-color: #1976d2;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin: 10px;
+    }
+    .tab-btn {
+      margin: 5px;
+      padding: 10px 20px;
+      background: #ddd;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: #1976d2;
+      color: white;
+    }
+    .tab-content {
+      display: none;
+      padding: 20px;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    input, select, button {
+      display: block;
+      margin: 10px 0;
+      padding: 8px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .item-list {
+      margin-top: 10px;
+    }
+    .item {
+      background: white;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>সেটিংস</h2>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('shop')">দোকান</button>
+  <button class="tab-btn" onclick="switchTab('product')">প্রোডাক্ট</button>
+</div>
+
+<div id="shop" class="tab-content active">
+  <h3>দোকান যুক্ত করুন</h3>
+  <select id="roadSelect">
+    <option value="">রোড সিলেক্ট করুন</option>
+    <option>নয়াবাজার</option>
+    <option>ফুলতলা</option>
+    <option>কামিনীগঞ্জ</option>
+    <option>মানিকসিং</option>
+    <option>ওয়াবদা</option>
+    <option>ভবানীগঞ্জ</option>
+    <option>বাছিরপুর</option>
+  </select>
+  <input type="text" id="shopName" placeholder="দোকানের নাম">
+  <input type="text" id="shopAddress" placeholder="ঠিকানা">
+  <button onclick="addShop()">সেভ করুন</button>
+  <div class="item-list" id="shopList"></div>
+</div>
+
+<div id="product" class="tab-content">
+  <h3>প্রোডাক্ট যুক্ত করুন</h3>
+  <input type="text" id="productName" placeholder="প্রোডাক্ট নাম">
+  <input type="number" id="productPrice" placeholder="প্রোডাক্ট প্রাইজ">
+  <button onclick="addProduct()">সেভ করুন</button>
+  <div class="item-list" id="productList"></div>
+</div>
+
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+    document.getElementById(tab).classList.add('active');
+  }
+
+  function addShop() {
+    const road = document.getElementById('roadSelect').value;
+    const name = document.getElementById('shopName').value;
+    const address = document.getElementById('shopAddress').value;
+    if (!road || !name) return alert("রোড ও দোকান নাম দিতে হবে");
+
+    let shops = JSON.parse(localStorage.getItem('shops') || '{}');
+    if (!shops[road]) shops[road] = [];
+    shops[road].push({ name, address });
+    localStorage.setItem('shops', JSON.stringify(shops));
+    document.getElementById('shopName').value = '';
+    document.getElementById('shopAddress').value = '';
+    loadShops();
+  }
+
+  function loadShops() {
+    const road = document.getElementById('roadSelect').value;
+    const listDiv = document.getElementById('shopList');
+    listDiv.innerHTML = '';
+    const shops = JSON.parse(localStorage.getItem('shops') || '{}')[road] || [];
+    shops.forEach((s, i) => {
+      listDiv.innerHTML += `<div class="item">${s.name} - ${s.address}</div>`;
+    });
+  }
+
+  document.getElementById('roadSelect').addEventListener('change', loadShops);
+
+  function addProduct() {
+    const name = document.getElementById('productName').value;
+    const price = parseFloat(document.getElementById('productPrice').value);
+    if (!name || isNaN(price)) return alert("নাম ও প্রাইজ দিন");
+    let products = JSON.parse(localStorage.getItem('products') || '[]');
+    products.push({ name, price });
+    localStorage.setItem('products', JSON.stringify(products));
+    document.getElementById('productName').value = '';
+    document.getElementById('productPrice').value = '';
+    loadProducts();
+  }
+
+  function loadProducts() {
+    const listDiv = document.getElementById('productList');
+    listDiv.innerHTML = '';
+    const products = JSON.parse(localStorage.getItem('products') || '[]');
+    products.forEach((p, i) => {
+      listDiv.innerHTML += `<div class="item">${p.name} - ${p.price} টাকা</div>`;
+    });
+  }
+
+  loadProducts();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>দোকান সিলেক্ট করুন</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .shop-list {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+    }
+    .shop-item {
+      background: #e3f2fd;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .shop-item:hover {
+      background: #bbdefb;
+    }
+  </style>
+</head>
+<body>
+
+<h2>দোকান নির্বাচন</h2>
+
+<div class="shop-list" id="shopList">
+  <p>লোড হচ্ছে...</p>
+</div>
+
+<script>
+  const road = localStorage.getItem('selectedRoad');
+  const date = localStorage.getItem('selectedDate');
+
+  function loadShops() {
+    const savedShops = JSON.parse(localStorage.getItem('shops') || '{}');
+    const roadShops = savedShops[road] || [];
+
+    const container = document.getElementById('shopList');
+    container.innerHTML = '';
+
+    if (roadShops.length === 0) {
+      container.innerHTML = '<p>এই রোডে কোনো দোকান পাওয়া যায়নি।</p>';
+      return;
+    }
+
+    roadShops.forEach(shop => {
+      const div = document.createElement('div');
+      div.className = 'shop-item';
+      div.innerText = shop.name + ' - ' + shop.address;
+      div.onclick = () => {
+        localStorage.setItem('selectedShop', JSON.stringify(shop));
+        window.location.href = 'order_entry.html';
+      };
+      container.appendChild(div);
+    });
+  }
+
+  loadShops();
+</script>
+
+</body>
+</html>
