@@ -30,6 +30,22 @@
       padding: 15px;
       border-radius: 5px;
     }
+    #saveMessage {
+      color: green;
+      text-align: center;
+      margin-top: 10px;
+      display: none;
+    }
+    #saveBtn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -45,6 +61,9 @@
   <p>নেট প্রাইজ: <span id="netPrice">0</span> টাকা</p>
 </div>
 
+<button id="saveBtn">অর্ডার সেইভ করুন</button>
+<div id="saveMessage">অর্ডার সফলভাবে সেইভ হয়েছে!</div>
+
 <script>
   const selectedRoad = localStorage.getItem('selectedRoad');
   const selectedDate = localStorage.getItem('selectedDate');
@@ -57,6 +76,8 @@
   const totalPriceSpan = document.getElementById('totalPrice');
   const netPriceSpan = document.getElementById('netPrice');
   const commissionInput = document.getElementById('commissionInput');
+  const saveMessage = document.getElementById('saveMessage');
+  const saveBtn = document.getElementById('saveBtn');
 
   let orderData = [];
 
@@ -70,12 +91,22 @@
     netPriceSpan.innerText = total - commission;
   }
 
-  function saveOrder() {
+  function saveOrder(showMessage = false) {
     const key = `order_${selectedRoad}_${selectedDate}_${selectedShop.name}`;
     localStorage.setItem(key, JSON.stringify(orderData));
+    if (showMessage) {
+      saveMessage.style.display = 'block';
+      setTimeout(() => {
+        saveMessage.style.display = 'none';
+      }, 2000);
+    }
   }
 
   commissionInput.addEventListener('input', updateTotals);
+
+  saveBtn.addEventListener('click', () => {
+    saveOrder(true);
+  });
 
   products.forEach(product => {
     const row = document.createElement('div');
