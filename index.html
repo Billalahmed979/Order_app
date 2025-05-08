@@ -247,4 +247,735 @@
             </header>
             
             <div class="settings-options">
-                <button onclick="showPage('shop-list-page')"
+                <button onclick="showPage('shop-list-page')" style="width: 100%; margin-bottom: 15px; padding: 15px; font-size: 18px;">দোকান লিস্ট</button>
+                <button onclick="showPage('product-list-page')" style="width: 100%; padding: 15px; font-size: 18px;">প্রোডাক্ট লিস্ট</button>
+            </div>
+        </div>
+
+        <!-- দোকান লিস্ট পেজ -->
+        <div id="shop-list-page" class="page">
+            <header>
+                <h1>দোকান লিস্ট</h1>
+                <button class="back-btn" onclick="showPage('settings-page')">← সেটিংস</button>
+            </header>
+            
+            <div class="form-group">
+                <label for="shop-road">রোড নির্বাচন করুন:</label>
+                <select id="shop-road">
+                    <option value="নয়াবাজার">নয়াবাজার</option>
+                    <option value="ফুলতলা">ফুলতলা</option>
+                    <option value="কামিনীগঞ্জ">কামিনীগঞ্জ</option>
+                    <option value="মানিকসিং">মানিকসিং</option>
+                    <option value="ওয়াবদা">ওয়াবদা</option>
+                    <option value="ভবানীগঞ্জ">ভবানীগঞ্জ</option>
+                    <option value="বাছিরপুর">বাছিরপুর</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="shop-name">দোকানের নাম:</label>
+                <input type="text" id="shop-name" placeholder="দোকানের নাম লিখুন">
+            </div>
+            
+            <div class="form-group">
+                <label for="shop-address">ঠিকানা:</label>
+                <input type="text" id="shop-address" placeholder="ঠিকানা লিখুন">
+            </div>
+            
+            <button onclick="addShop()">দোকান যোগ করুন</button>
+            
+            <table id="shop-table">
+                <thead>
+                    <tr>
+                        <th>রোড</th>
+                        <th>দোকানের নাম</th>
+                        <th>ঠিকানা</th>
+                        <th>অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody id="shop-table-body">
+                    <!-- দোকান লিস্ট এখানে লোড হবে -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- প্রোডাক্ট লিস্ট পেজ -->
+        <div id="product-list-page" class="page">
+            <header>
+                <h1>প্রোডাক্ট লিস্ট</h1>
+                <button class="back-btn" onclick="showPage('settings-page')">← সেটিংস</button>
+            </header>
+            
+            <div class="form-group">
+                <label for="product-name">প্রোডাক্ট নাম:</label>
+                <input type="text" id="product-name" placeholder="প্রোডাক্ট নাম লিখুন">
+            </div>
+            
+            <div class="form-group">
+                <label for="product-price">দাম:</label>
+                <input type="number" id="product-price" placeholder="দাম লিখুন">
+            </div>
+            
+            <button onclick="addProduct()">প্রোডাক্ট যোগ করুন</button>
+            
+            <table id="product-table">
+                <thead>
+                    <tr>
+                        <th>প্রোডাক্ট নাম</th>
+                        <th>দাম</th>
+                        <th>অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody id="product-table-body">
+                    <!-- প্রোডাক্ট লিস্ট এখানে লোড হবে -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ক্যালেন্ডার পেজ -->
+        <div id="calendar-page" class="page">
+            <header>
+                <h1 id="calendar-road-title">তারিখ নির্বাচন করুন</h1>
+                <button class="back-btn" onclick="showPage('home-page')">← হোম</button>
+            </header>
+            
+            <div class="calendar">
+                <label for="order-date">অর্ডারের তারিখ:</label>
+                <input type="date" id="order-date" onchange="loadShopsForRoad()">
+            </div>
+        </div>
+
+        <!-- দোকান নির্বাচন পেজ -->
+        <div id="shop-selection-page" class="page">
+            <header>
+                <h1 id="shop-selection-title">দোকান নির্বাচন করুন</h1>
+                <button class="back-btn" onclick="showPage('calendar-page')">← তারিখ পরিবর্তন</button>
+            </header>
+            
+            <div class="shop-list" id="shop-list-container">
+                <!-- দোকান কার্ড এখানে লোড হবে -->
+            </div>
+        </div>
+
+        <!-- অর্ডার এন্ট্রি পেজ -->
+        <div id="order-entry-page" class="page">
+            <header>
+                <h1 id="order-shop-title">অর্ডার এন্ট্রি</h1>
+                <button class="back-btn" onclick="showPage('shop-selection-page')">← দোকান পরিবর্তন</button>
+            </header>
+            
+            <div id="order-products-container">
+                <!-- প্রোডাক্ট লিস্ট এখানে লোড হবে -->
+            </div>
+            
+            <div class="total-section">
+                <h3>মোট হিসাব</h3>
+                <p>মোট টাকা: <span id="total-amount">0</span> টাকা</p>
+                
+                <div class="form-group">
+                    <label for="commission">কমিশন:</label>
+                    <input type="number" id="commission" placeholder="কমিশন লিখুন" onchange="calculateNetTotal()">
+                </div>
+                
+                <p>নেট টাকা: <span id="net-total">0</span> টাকা</p>
+                
+                <button onclick="saveOrder()">অর্ডার সেভ করুন</button>
+            </div>
+        </div>
+
+        <!-- অর্ডার রিভিউ পেজ -->
+        <div id="order-review-page" class="page">
+            <header>
+                <h1>পুরানো অর্ডার রিভিউ</h1>
+                <button class="back-btn" onclick="showPage('home-page')">← হোম</button>
+            </header>
+            
+            <div class="form-group">
+                <label for="review-road">রোড নির্বাচন করুন:</label>
+                <select id="review-road" onchange="loadShopsForReview()">
+                    <option value="নয়াবাজার">নয়াবাজার</option>
+                    <option value="ফুলতলা">ফুলতলা</option>
+                    <option value="কামিনীগঞ্জ">কামিনীগঞ্জ</option>
+                    <option value="মানিকসিং">মানিকসিং</option>
+                    <option value="ওয়াবদা">ওয়াবদা</option>
+                    <option value="ভবানীগঞ্জ">ভবানীগঞ্জ</option>
+                    <option value="বাছিরপুর">বাছিরপুর</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="review-date">তারিখ নির্বাচন করুন:</label>
+                <input type="date" id="review-date" onchange="loadOrdersForReview()">
+            </div>
+            
+            <div class="form-group">
+                <label for="review-shop">দোকান নির্বাচন করুন:</label>
+                <select id="review-shop" onchange="loadOrderDetails()">
+                    <option value="">প্রথমে তারিখ নির্বাচন করুন</option>
+                </select>
+            </div>
+            
+            <div id="order-review-container">
+                <!-- অর্ডার ডিটেইলস এখানে লোড হবে -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ডাটা স্টোরেজ
+        let shops = JSON.parse(localStorage.getItem('shops')) || [];
+        let products = JSON.parse(localStorage.getItem('products')) || [];
+        let orders = JSON.parse(localStorage.getItem('orders')) || [];
+        
+        // বর্তমান সিলেকশন
+        let currentRoad = '';
+        let currentDate = '';
+        let currentShop = null;
+        let currentOrder = {};
+        let editingOrderId = null;
+
+        // পেজ নেভিগেশন
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            // পেজ অনুযায়ী ডাটা লোড
+            if (pageId === 'shop-list-page') {
+                loadShops();
+            } else if (pageId === 'product-list-page') {
+                loadProducts();
+            } else if (pageId === 'order-review-page') {
+                loadOrdersForReview();
+            }
+        }
+
+        // রোড সিলেক্ট
+        function selectRoad(road) {
+            currentRoad = road;
+            document.getElementById('calendar-road-title').textContent = `${road} - তারিখ নির্বাচন`;
+            showPage('calendar-page');
+        }
+
+        // দোকান যোগ করুন
+        function addShop() {
+            const road = document.getElementById('shop-road').value;
+            const name = document.getElementById('shop-name').value.trim();
+            const address = document.getElementById('shop-address').value.trim();
+            
+            if (name === '') {
+                alert('দোকানের নাম লিখুন');
+                return;
+            }
+            
+            const newShop = {
+                id: Date.now(),
+                road,
+                name,
+                address
+            };
+            
+            shops.push(newShop);
+            localStorage.setItem('shops', JSON.stringify(shops));
+            loadShops();
+            
+            // ফর্ম ক্লিয়ার
+            document.getElementById('shop-name').value = '';
+            document.getElementById('shop-address').value = '';
+            
+            // সফলতা মেসেজ
+            alert(`${name} দোকান সফলভাবে যোগ হয়েছে!`);
+        }
+
+        // দোকান লোড করুন
+        function loadShops() {
+            const tbody = document.getElementById('shop-table-body');
+            tbody.innerHTML = '';
+            
+            if (shops.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center;">
+                            <p>কোনো দোকান নেই</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            shops.forEach(shop => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${shop.road}</td>
+                    <td>${shop.name}</td>
+                    <td>${shop.address}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button onclick="editShop(${shop.id})">এডিট</button>
+                            <button onclick="deleteShop(${shop.id})">ডিলিট</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // দোকান এডিট করুন
+        function editShop(id) {
+            const shopIndex = shops.findIndex(s => s.id === id);
+            if (shopIndex === -1) return;
+            
+            const shop = shops[shopIndex];
+            
+            document.getElementById('shop-road').value = shop.road;
+            document.getElementById('shop-name').value = shop.name;
+            document.getElementById('shop-address').value = shop.address;
+            
+            // পুরানো দোকান ডিলিট করুন
+            shops.splice(shopIndex, 1);
+            localStorage.setItem('shops', JSON.stringify(shops));
+            loadShops();
+            
+            alert(`${shop.name} দোকান এডিট মোডে আছে। নতুন তথ্য লিখে আবার যোগ করুন।`);
+        }
+
+        // দোকান ডিলিট করুন
+        function deleteShop(id) {
+            const shop = shops.find(s => s.id === id);
+            if (!shop) return;
+            
+            if (confirm(`আপনি কি "${shop.name}" দোকান ডিলিট করতে চান?`)) {
+                shops = shops.filter(s => s.id !== id);
+                localStorage.setItem('shops', JSON.stringify(shops));
+                loadShops();
+                alert(`${shop.name} দোকান ডিলিট করা হয়েছে`);
+            }
+        }
+
+        // প্রোডাক্ট যোগ করুন
+        function addProduct() {
+            const name = document.getElementById('product-name').value.trim();
+            const price = parseFloat(document.getElementById('product-price').value);
+            
+            if (name === '' || isNaN(price)) {
+                alert('প্রোডাক্ট নাম এবং দাম সঠিকভাবে লিখুন');
+                return;
+            }
+            
+            const newProduct = {
+                id: Date.now(),
+                name,
+                price
+            };
+            
+            products.push(newProduct);
+            localStorage.setItem('products', JSON.stringify(products));
+            loadProducts();
+            
+            // ফর্ম ক্লিয়ার
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-price').value = '';
+            
+            // সফলতা মেসেজ
+            alert(`${name} প্রোডাক্ট সফলভাবে যোগ হয়েছে!`);
+        }
+
+        // প্রোডাক্ট লোড করুন
+        function loadProducts() {
+            const tbody = document.getElementById('product-table-body');
+            tbody.innerHTML = '';
+            
+            if (products.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="3" style="text-align: center;">
+                            <p>কোনো প্রোডাক্ট নেই</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            products.forEach(product => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${product.name}</td>
+                    <td>${product.price} টাকা</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button onclick="editProduct(${product.id})">এডিট</button>
+                            <button onclick="deleteProduct(${product.id})">ডিলিট</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // প্রোডাক্ট এডিট করুন
+        function editProduct(id) {
+            const productIndex = products.findIndex(p => p.id === id);
+            if (productIndex === -1) return;
+            
+            const product = products[productIndex];
+            
+            document.getElementById('product-name').value = product.name;
+            document.getElementById('product-price').value = product.price;
+            
+            // পুরানো প্রোডাক্ট ডিলিট করুন
+            products.splice(productIndex, 1);
+            localStorage.setItem('products', JSON.stringify(products));
+            loadProducts();
+            
+            alert(`${product.name} প্রোডাক্ট এডিট মোডে আছে। নতুন তথ্য লিখে আবার যোগ করুন।`);
+        }
+
+        // প্রোডাক্ট ডিলিট করুন
+        function deleteProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+            
+            if (confirm(`আপনি কি "${product.name}" প্রোডাক্ট ডিলিট করতে চান?`)) {
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('products', JSON.stringify(products));
+                loadProducts();
+                alert(`${product.name} প্রোডাক্ট ডিলিট করা হয়েছে`);
+            }
+        }
+
+        // দোকান লোড করুন রোডের জন্য
+        function loadShopsForRoad() {
+            currentDate = document.getElementById('order-date').value;
+            if (!currentDate) {
+                alert('দয়া করে একটি তারিখ নির্বাচন করুন');
+                return;
+            }
+            
+            const roadShops = shops.filter(shop => shop.road === currentRoad);
+            const container = document.getElementById('shop-list-container');
+            container.innerHTML = '<div class="loading">লোড হচ্ছে...</div>';
+            
+            // সিমুলেট লোডিং ডিলে
+            setTimeout(() => {
+                container.innerHTML = '';
+                
+                if (roadShops.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <p>এই রোডে কোনো দোকান নেই</p>
+                            <button onclick="showPage('shop-list-page')">দোকান যোগ করুন</button>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                document.getElementById('shop-selection-title').textContent = 
+                    `${currentRoad} - ${formatDate(currentDate)} - দোকান নির্বাচন`;
+                
+                roadShops.forEach(shop => {
+                    const card = document.createElement('div');
+                    card.className = 'shop-card';
+                    card.innerHTML = `
+                        <h3>${shop.name}</h3>
+                        <p>${shop.address}</p>
+                        <small>${shop.road}</small>
+                    `;
+                    card.onclick = () => selectShop(shop);
+                    container.appendChild(card);
+                });
+            }, 500);
+        }
+
+        // দোকান সিলেক্ট করুন
+        function selectShop(shop) {
+            currentShop = shop;
+            document.getElementById('order-shop-title').textContent = `${shop.name} - অর্ডার এন্ট্রি`;
+            
+            // কারেন্ট অর্ডার ইনিশিয়ালাইজ করুন
+            currentOrder = {
+                id: editingOrderId || Date.now(),
+                road: currentRoad,
+                date: currentDate,
+                shop: shop,
+                products: {},
+                commission: 0,
+                total: 0,
+                netTotal: 0
+            };
+            
+            // যদি এডিট মোডে থাকে, পূর্বের ডাটা লোড করুন
+            if (editingOrderId) {
+                const existingOrder = orders.find(o => o.id === editingOrderId);
+                if (existingOrder) {
+                    currentOrder.products = {...existingOrder.products};
+                    currentOrder.commission = existingOrder.commission || 0;
+                    currentOrder.total = existingOrder.total || 0;
+                    currentOrder.netTotal = existingOrder.netTotal || 0;
+                }
+            }
+            
+            loadProductsForOrder();
+            showPage('order-entry-page');
+        }
+
+        // অর্ডারের জন্য প্রোডাক্ট লোড করুন
+        function loadProductsForOrder() {
+            const container = document.getElementById('order-products-container');
+            container.innerHTML = '<div class="loading">প্রোডাক্ট লোড হচ্ছে...</div>';
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+                
+                if (products.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <p>কোনো প্রোডাক্ট নেই</p>
+                            <button onclick="showPage('product-list-page')">প্রোডাক্ট যোগ করুন</button>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                products.forEach(product => {
+                    const productDiv = document.createElement('div');
+                    productDiv.className = 'product-item';
+                    
+                    // চেক করুন এই প্রোডাক্টটি আগে থেকে অর্ডারে আছে কিনা
+                    const existingProduct = currentOrder.products[product.id];
+                    const quantity = existingProduct ? existingProduct.quantity : 0;
+                    const total = (product.price * quantity).toFixed(2);
+                    
+                    productDiv.innerHTML = `
+                        <div class="product-info">
+                            <h4>${product.name}</h4>
+                            <p>দর: ${product.price} টাকা/ইউনিট</p>
+                        </div>
+                        <div class="product-controls">
+                            <input type="number" min="0" value="${quantity}" 
+                                   onchange="updateProductQuantity(${product.id}, this.value)"
+                                   class="quantity-input">
+                            <span class="product-total">${total} টাকা</span>
+                        </div>
+                    `;
+                    container.appendChild(productDiv);
+                });
+                
+                // কমিশন সেট করুন যদি থাকে
+                if (currentOrder.commission) {
+                    document.getElementById('commission').value = currentOrder.commission;
+                }
+                
+                updateTotal();
+            }, 500);
+        }
+
+        // প্রোডাক্ট কোয়ান্টিটি আপডেট করুন
+        function updateProductQuantity(productId, quantity) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            quantity = parseInt(quantity) || 0;
+            
+            if (quantity > 0) {
+                currentOrder.products[productId] = {
+                    name: product.name,
+                    price: product.price,
+                    quantity: quantity,
+                    total: product.price * quantity
+                };
+            } else {
+                delete currentOrder.products[productId];
+            }
+            
+            updateTotal();
+        }
+
+        // টোটাল আপডেট করুন
+        function updateTotal() {
+            let total = 0;
+            
+            Object.values(currentOrder.products).forEach(product => {
+                total += product.total;
+            });
+            
+            currentOrder.total = total;
+            currentOrder.netTotal = total - (currentOrder.commission || 0);
+            
+            document.getElementById('total-amount').textContent = total.toFixed(2);
+            document.getElementById('net-total').textContent = currentOrder.netTotal.toFixed(2);
+            
+            // প্রোডাক্ট টোটালও আপডেট করুন
+            Object.keys(currentOrder.products).forEach(productId => {
+                const input = document.querySelector(`input[onchange*="${productId}"]`);
+                if (input) {
+                    const productTotalElement = input.nextElementSibling;
+                    if (productTotalElement) {
+                        const product = currentOrder.products[productId];
+                        productTotalElement.textContent = `${product.total.toFixed(2)} টাকা`;
+                    }
+                }
+            });
+        }
+
+        // কমিশন ক্যালকুলেট করুন
+        function calculateNetTotal() {
+            const commission = parseFloat(document.getElementById('commission').value) || 0;
+            currentOrder.commission = commission;
+            currentOrder.netTotal = currentOrder.total - commission;
+            document.getElementById('net-total').textContent = currentOrder.netTotal.toFixed(2);
+        }
+
+        // অর্ডার সেভ করুন
+        function saveOrder() {
+            if (Object.keys(currentOrder.products).length === 0) {
+                alert('অন্তত একটি প্রোডাক্ট সিলেক্ট করুন');
+                return;
+            }
+            
+            // কমিশন আপডেট করুন
+            calculateNetTotal();
+            
+            // পুরানো অর্ডার ডিলিট করুন (যদি এডিট করা হয়)
+            if (editingOrderId) {
+                orders = orders.filter(order => order.id !== editingOrderId);
+            }
+            
+            orders.push(currentOrder);
+            localStorage.setItem('orders', JSON.stringify(orders));
+            
+            alert(`অর্ডার সফলভাবে সেভ হয়েছে!\nমোট টাকা: ${currentOrder.total.toFixed(2)} টাকা\nনেট টাকা: ${currentOrder.netTotal.toFixed(2)} টাকা`);
+            
+            resetOrder();
+            showPage('home-page');
+        }
+
+        // অর্ডার রিসেট করুন
+        function resetOrder() {
+            currentRoad = '';
+            currentDate = '';
+            currentShop = null;
+            currentOrder = {};
+            editingOrderId = null;
+            document.getElementById('order-date').value = '';
+            document.getElementById('commission').value = '';
+        }
+
+        // রিভিউ এর জন্য অর্ডার লোড করুন
+        function loadOrdersForReview() {
+            const road = document.getElementById('review-road').value;
+            const date = document.getElementById('review-date').value;
+            
+            const shopSelect = document.getElementById('review-shop');
+            shopSelect.innerHTML = '<option value="">দোকান নির্বাচন করুন</option>';
+            
+            if (!date) {
+                document.getElementById('order-review-container').innerHTML = 
+                    '<div class="empty-state"><p>প্রথমে একটি তারিখ নির্বাচন করুন</p></div>';
+                return;
+            }
+            
+            const roadOrders = orders.filter(order => 
+                order.road === road && order.date === date
+            );
+            
+            if (roadOrders.length === 0) {
+                document.getElementById('order-review-container').innerHTML = 
+                    '<div class="empty-state"><p>এই তারিখে কোনো অর্ডার নেই</p></div>';
+                return;
+            }
+            
+            // ইউনিক দোকান লিস্ট তৈরি করুন
+            const uniqueShops = {};
+            roadOrders.forEach(order => {
+                if (order.shop && order.shop.id) {
+                    uniqueShops[order.shop.id] = order.shop;
+                }
+            });
+            
+            // দোকান সিলেক্ট বক্স পপুলেট করুন
+            Object.values(uniqueShops).forEach(shop => {
+                const option = document.createElement('option');
+                option.value = shop.id;
+                option.textContent = `${shop.name} (${shop.road})`;
+                shopSelect.appendChild(option);
+            });
+        }
+
+        // দোকান নির্বাচন অনুযায়ী অর্ডার লোড করুন
+        function loadShopsForReview() {
+            const road = document.getElementById('review-road').value;
+            const date = document.getElementById('review-date').value;
+            
+            if (!date) return;
+            
+            const roadOrders = orders.filter(order => 
+                order.road === road && order.date === date
+            );
+            
+            const shopSelect = document.getElementById('review-shop');
+            shopSelect.innerHTML = '<option value="">দোকান নির্বাচন করুন</option>';
+            
+            // ইউনিক দোকান লিস্ট তৈরি করুন
+            const uniqueShops = {};
+            roadOrders.forEach(order => {
+                if (order.shop && order.shop.id) {
+                    uniqueShops[order.shop.id] = order.shop;
+                }
+            });
+            
+            // দোকান সিলেক্ট বক্স পপুলেট করুন
+            Object.values(uniqueShops).forEach(shop => {
+                const option = document.createElement('option');
+                option.value = shop.id;
+                option.textContent = `${shop.name} (${shop.road})`;
+                shopSelect.appendChild(option);
+            });
+        }
+
+        // অর্ডার ডিটেইলস লোড করুন
+        function loadOrderDetails() {
+            const shopId = parseInt(document.getElementById('review-shop').value);
+            if (!shopId) return;
+            
+            const road = document.getElementById('review-road').value;
+            const date = document.getElementById('review-date').value;
+            
+            const shopOrders = orders.filter(order => 
+                order.road === road && 
+                order.date === date && 
+                order.shop && 
+                order.shop.id === shopId
+            ).sort((a, b) => new Date(b.date) - new Date(a.date)); // নতুন থেকে পুরানো
+            
+            const container = document.getElementById('order-review-container');
+            container.innerHTML = '<div class="loading">অর্ডার ডিটেইলস লোড হচ্ছে...</div>';
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+                
+                if (shopOrders.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><p>এই দোকানে এই তারিখে কোনো অর্ডার নেই</p></div>';
+                    return;
+                }
+                
+                // সর্বশেষ অর্ডার নিন
+                const order = shopOrders[0];
+                const orderDiv = document.createElement('div');
+                orderDiv.className = 'order-details';
+                orderDiv.innerHTML = `
+                    <h3>${order.shop.name} - ${formatDate(order.date)}</h3>
+                    <p><strong>ঠিকানা:</strong> ${order.shop.address}</p>
+                    <p><strong>রোড:</strong> ${order.road}</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>প্রোডাক্ট</th>
+                                <th>পরিমাণ</th>
+                                <th>দর</th>
+                                <th>মোট</th>
+                            </tr>
+                        </thead>
+                        <tbody id="review-products-body">
+                            <!-- প্রোডাক্ট লিস্ট এখানে
